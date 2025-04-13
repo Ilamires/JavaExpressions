@@ -20,8 +20,11 @@ public class Expression {
         result = !"+-*/".contains(String.valueOf(expressionString.charAt(expressionString.length() - 1)));
         for (char symbol : expressionString.toCharArray()) {
             if (result) {
-                
-                if ("({[".contains(String.valueOf(symbol))) {
+                if (symbol == '.') {
+                    if (!Character.isDigit(lastSymbol) || isVariable) {
+                        result = false;
+                    }
+                } else if ("({[".contains(String.valueOf(symbol))) {
                     isVariable = false;
                     result = " +-*/".contains(String.valueOf(lastSymbol));
                     if (result)
@@ -83,7 +86,7 @@ public class Expression {
             if (i < expressionString.length() && Character.isAlphabetic(expressionString.charAt(i))) {
                 variable = new StringBuilder();
                 while (i < expressionString.length() && Character.isDigit(expressionString.charAt(i)) ||
-                Character.isAlphabetic(expressionString.charAt(i))) {
+                        Character.isAlphabetic(expressionString.charAt(i))) {
                     variable.append(expressionString.charAt(i));
                     ++i;
                 }
