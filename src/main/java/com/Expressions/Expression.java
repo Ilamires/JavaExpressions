@@ -10,6 +10,9 @@ public class Expression {
 
 
     public Expression(String expressionString) {
+        SetExpression(expressionString);
+    }
+    public void SetExpression(String expressionString) {
         this.expressionString = expressionString.replaceAll(" ", "");
     }
 
