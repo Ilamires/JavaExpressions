@@ -80,7 +80,11 @@ public class Expression {
                     variables.put(variable.toString(), variable_values.get(i));
                     ++i;
                 }
-                realExpressionStringBuilder.append(variables.get(variable.toString()).toString());
+                if (variables.get(variable.toString()) < 0)
+                    realExpressionStringBuilder.append("(")
+                            .append(variables.get(variable.toString()).toString()).append(")");
+                else
+                    realExpressionStringBuilder.append(variables.get(variable.toString()).toString());
                 variable = new StringBuilder();
             }
             if (!isVariable)
@@ -88,7 +92,11 @@ public class Expression {
         }
         if (isVariable) {
             variables.put(variable.toString(), variable_values.get(i));
-            realExpressionStringBuilder.append(variables.get(variable.toString()).toString());
+            if (variables.get(variable.toString()) < 0)
+                realExpressionStringBuilder.append("(")
+                        .append(variables.get(variable.toString()).toString()).append(")");
+            else
+                realExpressionStringBuilder.append(variables.get(variable.toString()).toString());
         }
         return realExpressionStringBuilder;
     }
