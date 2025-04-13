@@ -24,6 +24,8 @@ public class ExpressionTest {
         result = result && expression.IsCorrectExpression();
         expression = new Expression("-(-3/(-2))*y");
         result = result && expression.IsCorrectExpression();
+        expression = new Expression("-(-3/(-2.1))*y");
+        result = result && expression.IsCorrectExpression();
 
         //Incorrect expressions
         expression = new Expression("*(3+2)*6");
@@ -43,6 +45,8 @@ public class ExpressionTest {
         expression = new Expression("-(3/2)6*y");
         result = result && !expression.IsCorrectExpression();
         expression = new Expression("-(3/2)*y+");
+        result = result && !expression.IsCorrectExpression();
+        expression = new Expression("-(-3/(-2.1))*y.1");
         result = result && !expression.IsCorrectExpression();
 
         Assert.assertTrue(result);

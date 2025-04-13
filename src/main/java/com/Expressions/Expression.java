@@ -61,16 +61,17 @@ public class Expression {
         return result;
     }
 
-    public double CalculateExpression(LinkedList<Double> variable_values) {
-        double result = 1.0;
+    public float CalculateExpression(LinkedList<Float> variable_values) {
+        float result = 1.0f;
         StringBuilder variable = new StringBuilder();
         boolean isVariable = false;
-        HashMap<String, Double> variables = new HashMap<String, Double>();
+        HashMap<String, Float> variables = new HashMap<String, Float>();
         int i = 0;
         for (char symbol : expressionString.toCharArray()) {
             if (Character.isDigit(symbol) || Character.isAlphabetic(symbol)) {
                 isVariable = isVariable || Character.isAlphabetic(symbol);
-                variable.append(symbol);
+                if (isVariable)
+                    variable.append(symbol);
             } else if (isVariable) {
                 isVariable = false;
                 variables.put(variable.toString(), variable_values.get(i));
@@ -78,18 +79,17 @@ public class Expression {
                 ++i;
             }
         }
+        if (isVariable) {
+            variables.put(variable.toString(), variable_values.get(i));
+        }
+        String realExpressionString = expressionString;
+        for (String variableName : variables.keySet()) {
+            realExpressionString = realExpressionString.replaceAll(variableName, Float.toString(variables.get(variableName)));
+        }
         i = 0;
         while (i < expressionString.length()) {
             while (i < expressionString.length() && "({[".contains(String.valueOf(expressionString.charAt(i)))) {
                 ++i;
-            }
-            if (i < expressionString.length() && Character.isAlphabetic(expressionString.charAt(i))) {
-                variable = new StringBuilder();
-                while (i < expressionString.length() && Character.isDigit(expressionString.charAt(i)) ||
-                        Character.isAlphabetic(expressionString.charAt(i))) {
-                    variable.append(expressionString.charAt(i));
-                    ++i;
-                }
             }
             if (i < expressionString.length() && Character.isDigit(expressionString.charAt(i))) {
                 StringBuilder number = new StringBuilder();
