@@ -26,7 +26,7 @@ public class Expression {
                     }
                 } else if ("({[".contains(String.valueOf(symbol))) {
                     isVariable = false;
-                    result = " +-*/".contains(String.valueOf(lastSymbol));
+                    result = " +-*/(".contains(String.valueOf(lastSymbol));
                     if (result)
                         correctStaples.push(symbol);
                 } else if (")]}".contains(String.valueOf(symbol))) {
@@ -61,32 +61,43 @@ public class Expression {
         return result;
     }
 
-    public float CalculateExpression(LinkedList<Float> variable_values) {
-        float result = 1.0f;
+    private StringBuilder SubstituteVariables(LinkedList<Float> variable_values){
         StringBuilder variable = new StringBuilder();
+        StringBuilder realExpressionStringBuilder = new StringBuilder();
         boolean isVariable = false;
         HashMap<String, Float> variables = new HashMap<String, Float>();
         int i = 0;
         for (char symbol : expressionString.toCharArray()) {
             if (Character.isDigit(symbol) || Character.isAlphabetic(symbol)) {
                 isVariable = isVariable || Character.isAlphabetic(symbol);
-                if (isVariable)
+                if (isVariable) {
                     variable.append(symbol);
+                }
             } else if (isVariable) {
                 isVariable = false;
-                variables.put(variable.toString(), variable_values.get(i));
+                if (!variables.containsKey(variable.toString())) {
+                    variables.put(variable.toString(), variable_values.get(i));
+                    ++i;
+                }
+                realExpressionStringBuilder.append(variables.get(variable.toString()).toString());
                 variable = new StringBuilder();
-                ++i;
             }
+            if (!isVariable)
+                realExpressionStringBuilder.append(symbol);
         }
         if (isVariable) {
             variables.put(variable.toString(), variable_values.get(i));
+            realExpressionStringBuilder.append(variables.get(variable.toString()).toString());
         }
-        String realExpressionString = expressionString;
-        for (String variableName : variables.keySet()) {
-            realExpressionString = realExpressionString.replaceAll(variableName, Float.toString(variables.get(variableName)));
-        }
-        i = 0;
+        return realExpressionStringBuilder;
+    }
+
+    public float CalculateExpression(LinkedList<Float> variable_values) {
+        if (!IsCorrectExpression())
+            throw new ArithmeticException("Expression isn't correct");
+        float result = 1.0f;
+        String realExpressionString = SubstituteVariables(variable_values).toString();
+        int i = 0;
         while (i < expressionString.length()) {
             while (i < expressionString.length() && "({[".contains(String.valueOf(expressionString.charAt(i)))) {
                 ++i;
