@@ -105,22 +105,23 @@ public class Expression {
             if ("+-*/".contains(String.valueOf(realExpressionString.charAt(i)))) {
                 if (realExpressionString.charAt(i) == '-' &&
                         (i == 0 || realExpressionString.charAt(i - 1) == '(')
-                        && realExpressionString.charAt(i + 1) == '(')
+                        && realExpressionString.charAt(i + 1) == '(') {
                     Others.push(String.valueOf(realExpressionString.charAt(i)));
-                else if (realExpressionString.charAt(i) == '-' &&
+                    ++i;
+                } else if (realExpressionString.charAt(i) == '-' &&
                         (i == 0 || realExpressionString.charAt(i - 1) == '(')) {
                     StringBuilder numberBuilder = new StringBuilder();
-                    while (i < realExpressionString.length() &&
-                            (Character.isDigit(realExpressionString.charAt(i)) ||
-                                    realExpressionString.charAt(i) == '.')) {
+                    do {
                         numberBuilder.append(realExpressionString.charAt(i));
                         ++i;
-                    }
+                    } while (i < realExpressionString.length() &&
+                            (Character.isDigit(realExpressionString.charAt(i)) ||
+                                    realExpressionString.charAt(i) == '.'));
                     Others.push(numberBuilder.toString());
                 } else {
                     Operations.push(realExpressionString.charAt(i));
+                    ++i;
                 }
-                ++i;
             } else if (realExpressionString.charAt(i) == '(') {
                 Others.push(String.valueOf(realExpressionString.charAt(i)));
                 ++i;
@@ -133,13 +134,14 @@ public class Expression {
                 }
                 number = numberBuilder.toString();
                 if (!Others.isEmpty() && !Others.peek().equals("(")) {
-                    if (Operations.peek() == '*') {
-                        Operations.pop();
-                        number = Float.toString(Float.parseFloat(number) * Float.parseFloat(Others.pop()));
-                    } else if (Operations.peek() == '/') {
-                        Operations.pop();
-                        number = Float.toString(Float.parseFloat(Others.pop()) / Float.parseFloat(number));
-                    }
+                    if (!Operations.isEmpty())
+                        if (Operations.peek() == '*') {
+                            Operations.pop();
+                            number = Float.toString(Float.parseFloat(number) * Float.parseFloat(Others.pop()));
+                        } else if (Operations.peek() == '/') {
+                            Operations.pop();
+                            number = Float.toString(Float.parseFloat(Others.pop()) / Float.parseFloat(number));
+                        }
                 }
                 Others.push(number);
             } else if (realExpressionString.charAt(i) == ')') {
@@ -161,13 +163,14 @@ public class Expression {
                 }
 
                 if (!Others.isEmpty() && !Others.peek().equals("(")) {
-                    if (Operations.peek() == '*') {
-                        Operations.pop();
-                        number = Float.toString(Float.parseFloat(number) * Float.parseFloat(Others.pop()));
-                    } else if (Operations.peek() == '/') {
-                        Operations.pop();
-                        number = Float.toString(Float.parseFloat(Others.pop()) / Float.parseFloat(number));
-                    }
+                    if (!Operations.isEmpty())
+                        if (Operations.peek() == '*') {
+                            Operations.pop();
+                            number = Float.toString(Float.parseFloat(number) * Float.parseFloat(Others.pop()));
+                        } else if (Operations.peek() == '/') {
+                            Operations.pop();
+                            number = Float.toString(Float.parseFloat(Others.pop()) / Float.parseFloat(number));
+                        }
                 }
                 Others.push(number);
                 ++i;
