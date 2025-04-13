@@ -50,6 +50,8 @@ public class ExpressionTest {
         result = result && !expression.IsCorrectExpression();
         expression = new Expression("-(-3/(-2.1))*y.1");
         result = result && !expression.IsCorrectExpression();
+        expression = new Expression("-( -3 /((-.1)+3)) * y");
+        result = result && !expression.IsCorrectExpression();
 
         Assert.assertTrue(result);
     }

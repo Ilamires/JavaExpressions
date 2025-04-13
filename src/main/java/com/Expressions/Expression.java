@@ -1,5 +1,6 @@
 package com.Expressions;
 
+import javax.print.attribute.standard.MediaSize;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.LinkedList;
@@ -61,7 +62,7 @@ public class Expression {
         return result;
     }
 
-    private StringBuilder SubstituteVariables(LinkedList<Float> variable_values){
+    private StringBuilder SubstituteVariables(LinkedList<Float> variable_values) {
         StringBuilder variable = new StringBuilder();
         StringBuilder realExpressionStringBuilder = new StringBuilder();
         boolean isVariable = false;
@@ -95,31 +96,93 @@ public class Expression {
     public float CalculateExpression(LinkedList<Float> variable_values) {
         if (!IsCorrectExpression())
             throw new ArithmeticException("Expression isn't correct");
-        float result = 1.0f;
         String realExpressionString = SubstituteVariables(variable_values).toString();
+        String number;
+        Stack<Character> Operations = new Stack<>();
+        Stack<String> Others = new Stack<>();
         int i = 0;
-        while (i < expressionString.length()) {
-            while (i < expressionString.length() && "({[".contains(String.valueOf(expressionString.charAt(i)))) {
+        while (i < realExpressionString.length()) {
+            if ("+-*/".contains(String.valueOf(realExpressionString.charAt(i)))) {
+                if (realExpressionString.charAt(i) == '-' &&
+                        (i == 0 || realExpressionString.charAt(i - 1) == '(')
+                        && realExpressionString.charAt(i + 1) == '(')
+                    Others.push(String.valueOf(realExpressionString.charAt(i)));
+                else if (realExpressionString.charAt(i) == '-' &&
+                        (i == 0 || realExpressionString.charAt(i - 1) == '(')) {
+                    StringBuilder numberBuilder = new StringBuilder();
+                    while (i < realExpressionString.length() &&
+                            (Character.isDigit(realExpressionString.charAt(i)) ||
+                                    realExpressionString.charAt(i) == '.')) {
+                        numberBuilder.append(realExpressionString.charAt(i));
+                        ++i;
+                    }
+                    Others.push(numberBuilder.toString());
+                } else {
+                    Operations.push(realExpressionString.charAt(i));
+                }
                 ++i;
-            }
-            if (i < expressionString.length() && Character.isDigit(expressionString.charAt(i))) {
-                StringBuilder number = new StringBuilder();
-                while (i < expressionString.length() && Character.isDigit(expressionString.charAt(i))) {
-                    number.append(expressionString.charAt(i));
+            } else if (realExpressionString.charAt(i) == '(') {
+                Others.push(String.valueOf(realExpressionString.charAt(i)));
+                ++i;
+            } else if (Character.isDigit(realExpressionString.charAt(i))) {
+                StringBuilder numberBuilder = new StringBuilder();
+                while (i < realExpressionString.length() &&
+                        (Character.isDigit(realExpressionString.charAt(i)) || realExpressionString.charAt(i) == '.')) {
+                    numberBuilder.append(realExpressionString.charAt(i));
                     ++i;
                 }
-            }
-            while (i < expressionString.length() && "+-".contains(String.valueOf(expressionString.charAt(i)))) {
-                ++i;
-            }
-            while (i < expressionString.length() && "*/".contains(String.valueOf(expressionString.charAt(i)))) {
-                ++i;
-            }
-            while (i < expressionString.length() && ")]}".contains(String.valueOf(expressionString.charAt(i)))) {
+                number = numberBuilder.toString();
+                if (!Others.isEmpty() && !Others.peek().equals("(")) {
+                    if (Operations.peek() == '*') {
+                        Operations.pop();
+                        number = Float.toString(Float.parseFloat(number) * Float.parseFloat(Others.pop()));
+                    } else if (Operations.peek() == '/') {
+                        Operations.pop();
+                        number = Float.toString(Float.parseFloat(Others.pop()) / Float.parseFloat(number));
+                    }
+                }
+                Others.push(number);
+            } else if (realExpressionString.charAt(i) == ')') {
+                number = Others.pop();
+                while (!Others.isEmpty() && !Others.peek().equals("(")) {
+                    if (Operations.peek() == '+') {
+                        Operations.pop();
+                        number = Float.toString(Float.parseFloat(number) + Float.parseFloat(Others.pop()));
+                    } else if (Operations.peek() == '-') {
+                        Operations.pop();
+                        number = Float.toString(Float.parseFloat(Others.pop()) - Float.parseFloat(number));
+                    }
+                }
+                if (!Others.isEmpty())
+                    Others.pop();
+                if (!Others.isEmpty() && Others.peek().equals("-")) {
+                    Others.pop();
+                    number = Float.toString(-Float.parseFloat(number));
+                }
+
+                if (!Others.isEmpty() && !Others.peek().equals("(")) {
+                    if (Operations.peek() == '*') {
+                        Operations.pop();
+                        number = Float.toString(Float.parseFloat(number) * Float.parseFloat(Others.pop()));
+                    } else if (Operations.peek() == '/') {
+                        Operations.pop();
+                        number = Float.toString(Float.parseFloat(Others.pop()) / Float.parseFloat(number));
+                    }
+                }
+                Others.push(number);
                 ++i;
             }
         }
-
-        return result;
+        number = Others.pop();
+        while (!Operations.isEmpty()) {
+            if (Operations.peek() == '+') {
+                Operations.pop();
+                number = Float.toString(Float.parseFloat(number) + Float.parseFloat(Others.pop()));
+            } else if (Operations.peek() == '-') {
+                Operations.pop();
+                number = Float.toString(Float.parseFloat(Others.pop()) - Float.parseFloat(number));
+            }
+        }
+        return Float.parseFloat(number);
     }
 }
