@@ -4,17 +4,37 @@ import java.util.HashMap;
 import java.util.Stack;
 import java.util.LinkedList;
 
+/**
+ * A class for working with mathematical expressions, including correctness checking,
+ * variable substitution, and result calculation.
+ */
 public class Expression {
     String expressionString;
 
-
+    /**
+     * Constructor of the Expression class.
+     *
+     * @param expressionString is a string representing a mathematical expression.
+     */
     public Expression(String expressionString) {
         SetExpression(expressionString);
     }
+
+    /**
+     * Sets a new mathematical expression by deleting all spaces.
+     *
+     * @param expressionString is a string representing a mathematical expression.
+     */
     public void SetExpression(String expressionString) {
         this.expressionString = expressionString.replaceAll(" ", "");
     }
 
+    /**
+     * Checks the correctness of the mathematical expression.
+     * Checks the balance of parentheses, the correctness of operators, and the validity of characters.
+     *
+     * @return true if the expression is correct, otherwise false.
+     */
     public boolean IsCorrectExpression() {
         boolean result = true;
         Stack<Character> correctStaples = new Stack<>();
@@ -64,6 +84,14 @@ public class Expression {
         return result;
     }
 
+    /**
+     * Replaces variables in the expression with their values from the list.
+     *
+     * @param variable_values is a list of variable values.
+     * @return StringBuilder with an expression where variables are replaced with their values.
+     * @throws IndexOutOfBoundsException if the number of variable values is less
+     * than the number of variables in the expression.
+     */
     private StringBuilder SubstituteVariables(LinkedList<Float> variable_values) {
         StringBuilder variable = new StringBuilder();
         StringBuilder realExpressionStringBuilder = new StringBuilder();
@@ -107,6 +135,13 @@ public class Expression {
         return realExpressionStringBuilder;
     }
 
+    /**
+     * Calculates the value of a mathematical expression after substituting variables.
+     *
+     * @param variable_values is a list of variable values.
+     * @return the result of evaluating the expression.
+     * @throws ArithmeticException if the expression is incorrect.
+     */
     public float CalculateExpression(LinkedList<Float> variable_values) {
         if (!IsCorrectExpression())
             throw new ArithmeticException("Expression isn't correct");
