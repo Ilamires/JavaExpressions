@@ -61,7 +61,7 @@ public class ExpressionTest {
     @Test
     public void ExpressionCalculateExpressionTest() {
         float E = 0.00001f;
-        boolean result;
+        boolean result = true;
         Expression expression = new Expression("-(-(-2.1+ (-5) + 4)*x+3/(3-4)*4/7*8)*xy");
         LinkedList<Float> variables = new LinkedList<Float>();
         variables.add(5.0f);
@@ -84,7 +84,7 @@ public class ExpressionTest {
     @Test
     public void ExpressionSetExpressionTest() {
         float E = 0.00001f;
-        boolean result;
+        boolean result = true;
         Expression expression = new Expression("-(-(-2.1+ (-5) + 4)*x+3/(3-4)*4/7*8)*xy");
         LinkedList<Float> variables = new LinkedList<Float>();
         variables.add(5.0f);

@@ -78,9 +78,9 @@ public class Expression {
                 }
             } else if (isVariable) {
                 isVariable = false;
-                if (variable_values.size() <= i)
-                    throw new IndexOutOfBoundsException("Not enough variable values");
                 if (!variables.containsKey(variable.toString())) {
+                    if (variable_values.size() <= i)
+                        throw new IndexOutOfBoundsException("Not enough variable values");
                     variables.put(variable.toString(), variable_values.get(i));
                     ++i;
                 }
