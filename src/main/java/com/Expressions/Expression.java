@@ -76,6 +76,8 @@ public class Expression {
                 }
             } else if (isVariable) {
                 isVariable = false;
+                if (variable_values.size() <= i)
+                    throw new IndexOutOfBoundsException("Not enough variable values");
                 if (!variables.containsKey(variable.toString())) {
                     variables.put(variable.toString(), variable_values.get(i));
                     ++i;
@@ -91,6 +93,8 @@ public class Expression {
                 realExpressionStringBuilder.append(symbol);
         }
         if (isVariable) {
+            if (variable_values.size() <= i)
+                throw new IndexOutOfBoundsException("Not enough variable values");
             variables.put(variable.toString(), variable_values.get(i));
             if (variables.get(variable.toString()) < 0)
                 realExpressionStringBuilder.append("(")
