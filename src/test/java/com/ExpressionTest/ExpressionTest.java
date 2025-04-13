@@ -18,13 +18,15 @@ public class ExpressionTest {
         result = result && expression.IsCorrectExpression();
         expression = new Expression("-(x3/2)*6");
         result = result && expression.IsCorrectExpression();
-        expression = new Expression("-(3/2)*y6");
+        expression = new Expression("-(3/2)* y6");
         result = result && expression.IsCorrectExpression();
-        expression = new Expression("-(3/2)*yy6y");
+        expression = new Expression("-(3/2) * y y6y");
         result = result && expression.IsCorrectExpression();
         expression = new Expression("-(-3/(-2))*y");
         result = result && expression.IsCorrectExpression();
         expression = new Expression("-(-3/(-2.1))*y");
+        result = result && expression.IsCorrectExpression();
+        expression = new Expression("-( -3 /((-2 .1)  +3)) * y");
         result = result && expression.IsCorrectExpression();
 
         //Incorrect expressions

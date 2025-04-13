@@ -9,7 +9,7 @@ public class Expression {
 
 
     public Expression(String expressionString) {
-        this.expressionString = expressionString;
+        this.expressionString = expressionString.replaceAll(" ", "");
     }
 
     public boolean IsCorrectExpression() {
